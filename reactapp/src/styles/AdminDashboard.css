@@ -1,0 +1,81 @@
+.dashboard-container {
+    width: 90%;
+    margin: 20px auto;
+    font-family: 'Arial', sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+header h2 {
+    margin-bottom: 10px;
+}
+
+.tabs button {
+    margin: 0 5px;
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    background-color: #ddd;
+    border-radius: 5px;
+    transition: 0.2s;
+}
+
+.tabs button.active, .tabs button:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.tab-content {
+    margin-top: 20px;
+}
+
+.courses-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.course-card {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    flex: 1 1 200px;
+    transition: 0.2s;
+}
+
+.course-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #999;
+}
+
+.add-course-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.add-course-form input {
+    padding: 8px;
+    flex: 1;
+}
+
+.add-course-form button {
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.back-btn {
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
