@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Course.css";
 
-export default function StudentCourses({ courses, username }) {
+export default function StudentCourses({ courses }) {
     const navigate = useNavigate();
 
     if (!courses || courses.length === 0) {
@@ -21,7 +21,7 @@ export default function StudentCourses({ courses, username }) {
                             className="start-quiz-btn"
                             onClick={() => navigate(`/student/quiz/${course.id}`)}
                         >
-                            Go to Quiz
+                            Start Quiz
                         </button>
                     </div>
                 ))}

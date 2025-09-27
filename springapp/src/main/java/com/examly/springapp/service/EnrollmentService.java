@@ -5,7 +5,6 @@ import com.examly.springapp.repository.EnrollmentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EnrollmentService {
@@ -16,8 +15,13 @@ public class EnrollmentService {
         this.repo = repo;
     }
 
-    public Enrollment enrollStudent(Enrollment enrollment) {
-        enrollment.setStatus("ENROLLED");
+    public Enrollment enrollStudent(Long studentId, Long courseId) {
+        // Check if already enrolled
+        if (repo.findByStudentIdAndCourseId(studentId, courseId).isPresent()) {
+            throw new RuntimeException("Student already enrolled in this course");
+        }
+
+        Enrollment enrollment = new Enrollment(studentId, courseId, "ENROLLED");
         return repo.save(enrollment);
     }
 
@@ -29,8 +33,8 @@ public class EnrollmentService {
         return repo.findByCourseId(courseId);
     }
 
-    public Enrollment updateEnrollment(Long id, String status) {
-        Enrollment enrollment = repo.findById(id).orElseThrow();
+    public Enrollment updateEnrollmentStatus(Long id, String status) {
+        Enrollment enrollment = repo.findById(id).orElseThrow(() -> new RuntimeException("Enrollment not found"));
         enrollment.setStatus(status);
         return repo.save(enrollment);
     }

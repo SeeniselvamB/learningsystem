@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Profile from "./Profile";
-import StudentCourses from "./StudentCourses"; // For enrolled courses
-import AllCourses from "./AllCourses"; // For all available courses
-import { getProfile, getAllCourses } from "../../api";
+import StudentCourses from "./StudentCourses";
+import AllCourses from "./AllCourses";
+import * as api from "../../api";
 import "../../styles/StudentDashboard.css";
 
 export default function StudentDashboard() {
@@ -11,49 +12,49 @@ export default function StudentDashboard() {
     const [allCourses, setAllCourses] = useState([]);
     const [enrolledCourses, setEnrolledCourses] = useState([]);
 
-    // Get logged-in user from localStorage
     const loggedUser = JSON.parse(localStorage.getItem("user"));
-    const username = loggedUser?.username;
+    const userId = loggedUser?.id;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (username) {
-                    const profileData = await getProfile(username);
-                    setUser(profileData);
-                    setEnrolledCourses(profileData.enrolledCourses || []);
-                }
+                if (!userId) return;
 
-                const coursesData = await getAllCourses();
+                // Get profile
+                const profileData = await api.getProfile(userId);
+                setUser(profileData);
+
+                // Get enrollments
+                const enrollments = await api.getStudentEnrollments(userId);
+                const enrolledCourseIds = enrollments.map(e => e.courseId);
+
+                // Get all courses
+                const coursesData = await api.getAllCourses();
                 setAllCourses(coursesData);
+
+                // Filter enrolled course objects
+                setEnrolledCourses(coursesData.filter(c => enrolledCourseIds.includes(c.id)));
+
             } catch (err) {
                 console.error(err);
             }
         };
+
         fetchData();
-    }, [username]);
+    }, [userId]);
 
     return (
         <div className="dashboard-container">
             <header>
-                <h2>Welcome, {user?.fullName || username}</h2>
+                <h2>Welcome, {user?.fullName || loggedUser?.username}</h2>
                 <div className="tabs">
-                    <button
-                        className={activeTab === "profile" ? "active" : ""}
-                        onClick={() => setActiveTab("profile")}
-                    >
+                    <button className={activeTab === "profile" ? "active" : ""} onClick={() => setActiveTab("profile")}>
                         Profile
                     </button>
-                    <button
-                        className={activeTab === "enrolled" ? "active" : ""}
-                        onClick={() => setActiveTab("enrolled")}
-                    >
+                    <button className={activeTab === "enrolled" ? "active" : ""} onClick={() => setActiveTab("enrolled")}>
                         My Courses
                     </button>
-                    <button
-                        className={activeTab === "all" ? "active" : ""}
-                        onClick={() => setActiveTab("all")}
-                    >
+                    <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>
                         All Courses
                     </button>
                 </div>
@@ -61,8 +62,8 @@ export default function StudentDashboard() {
 
             <div className="tab-content">
                 {activeTab === "profile" && <Profile user={user} />}
-                {activeTab === "enrolled" && <StudentCourses courses={enrolledCourses} username={username} />}
-                {activeTab === "all" && <AllCourses courses={allCourses} username={username} />}
+                {activeTab === "enrolled" && <StudentCourses courses={enrolledCourses} />}
+                {activeTab === "all" && <AllCourses userId={userId} setMyCourses={setEnrolledCourses} />}
             </div>
         </div>
     );
