@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import * as api from "../api";
-import "../styles/QuizPage.css";
+import * as api from "../../api";
+import "../../styles/QuizPage.css";
 
 export default function QuizPage() {
     const { courseId } = useParams();
@@ -12,25 +12,25 @@ export default function QuizPage() {
     const [newQuiz, setNewQuiz] = useState({ question: "", options: ["", "", "", ""], correctIndex: 0 });
     const [editingQuiz, setEditingQuiz] = useState(null);
 
-    const fetchCourse = async () => {
-        try {
-            const courses = await api.getAllCourses();
-            const c = courses.find(c => c.id === parseInt(courseId));
-            setCourse(c);
-        } catch (err) { console.error(err); }
-    };
-
-    const fetchQuizzes = async () => {
-        try {
-            const data = await api.getQuizzesByCourse(courseId);
-            setQuizzes(data);
-        } catch (err) { console.error(err); }
-    };
-
     useEffect(() => {
+        const fetchCourse = async () => {
+            try {
+                const courses = await api.getAllCourses();
+                const c = courses.find(c => c.id === parseInt(courseId));
+                setCourse(c);
+            } catch (err) { console.error(err); }
+        };
+
+        const fetchQuizzes = async () => {
+            try {
+                const data = await api.getQuizzesByCourse(courseId);
+                setQuizzes(data);
+            } catch (err) { console.error(err); }
+        };
+
         fetchCourse();
         fetchQuizzes();
-    }, [courseId]);
+    }, [courseId]); 
 
     const handleSaveQuiz = async () => {
         try {
@@ -41,7 +41,8 @@ export default function QuizPage() {
             }
             setNewQuiz({ question: "", options: ["", "", "", ""], correctIndex: 0 });
             setEditingQuiz(null);
-            fetchQuizzes();
+            const data = await api.getQuizzesByCourse(courseId);
+            setQuizzes(data);
         } catch (err) { console.error(err); }
     };
 
@@ -54,7 +55,8 @@ export default function QuizPage() {
         if (!window.confirm("Delete this quiz?")) return;
         try {
             await api.deleteQuiz(id);
-            fetchQuizzes();
+            const data = await api.getQuizzesByCourse(courseId);
+            setQuizzes(data);
         } catch (err) { console.error(err); }
     };
 
@@ -64,20 +66,44 @@ export default function QuizPage() {
             <button onClick={() => navigate("/admin/courses")}>Back to Courses</button>
 
             <div className="quiz-form">
-                <input type="text" placeholder="Question" value={newQuiz.question}
-                    onChange={e => setNewQuiz({ ...newQuiz, question: e.target.value })} />
+                <input
+                    type="text"
+                    placeholder="Question"
+                    value={newQuiz.question}
+                    onChange={e => setNewQuiz({ ...newQuiz, question: e.target.value })}
+                />
                 {newQuiz.options.map((opt, i) => (
-                    <input key={i} type="text" placeholder={`Option ${i+1}`} value={opt}
+                    <input
+                        key={i}
+                        type="text"
+                        placeholder={`Option ${i + 1}`}
+                        value={opt}
                         onChange={e => {
                             const updatedOptions = [...newQuiz.options];
                             updatedOptions[i] = e.target.value;
                             setNewQuiz({ ...newQuiz, options: updatedOptions });
-                        }} />
+                        }}
+                    />
                 ))}
-                <input type="number" min="0" max="3" placeholder="Correct Index" value={newQuiz.correctIndex}
-                    onChange={e => setNewQuiz({ ...newQuiz, correctIndex: parseInt(e.target.value) })} />
-                <button onClick={handleSaveQuiz}>{editingQuiz ? "Update Quiz" : "Add Quiz"}</button>
-                <button onClick={() => { setEditingQuiz(null); setNewQuiz({ question: "", options: ["", "", "", ""], correctIndex: 0 }); }}>Cancel</button>
+                <input
+                    type="number"
+                    min="0"
+                    max="3"
+                    placeholder="Correct Index"
+                    value={newQuiz.correctIndex}
+                    onChange={e => setNewQuiz({ ...newQuiz, correctIndex: parseInt(e.target.value) })}
+                />
+                <button onClick={handleSaveQuiz}>
+                    {editingQuiz ? "Update Quiz" : "Add Quiz"}
+                </button>
+                <button
+                    onClick={() => {
+                        setEditingQuiz(null);
+                        setNewQuiz({ question: "", options: ["", "", "", ""], correctIndex: 0 });
+                    }}
+                >
+                    Cancel
+                </button>
             </div>
 
             <ul className="quiz-list">

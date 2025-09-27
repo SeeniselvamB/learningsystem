@@ -3,11 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import AuthPage from "./components/AuthPage";
-import StudentDashboard from "./components/StudentDashboard";
-import AdminDashboard from "./components/AdminDashboard";
-import CoursePage from "./components/Course"; 
-import QuizPage from "./components/QuizPage"; 
-
+import StudentDashboard from "./components/student/StudentDashboard";
+import AdminDashboard from "./components/admin/AdminDashboard";
+import CoursePage from "./components/admin/Course";
+import QuizPage from "./components/admin/QuizPage";
 function App() {
     return (
         <Router>
@@ -20,8 +19,15 @@ function App() {
                 <Route path="/admin/courses" element={<CoursePage />} />
                 <Route path="/admin/quiz/:courseId" element={<QuizPage />} />
             </Routes>
+            
         </Router>
+
     );
+    
 }
 
 export default App;
+
+
+
+

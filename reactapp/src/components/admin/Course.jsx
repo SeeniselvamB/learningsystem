@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CourseForm from "./CourseForm";
-import * as api from "../api";
-import "../styles/Course.css";
+import * as api from "../../api";
+import "../../styles/Course.css";
 
 export default function Course() {
     const [courses, setCourses] = useState([]);

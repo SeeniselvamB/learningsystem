@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import Course from "./Course";
 import Profile from "./Profile";
 import User from "./User";
-import { getAllUsers, getAllCourses } from "../api";
-import "../styles/AdminDashboard.css";
+import { getAllUsers, getAllCourses } from "../../api";
+import "../../styles/AdminDashboard.css";
 
 export default function AdminDashboard() {
     const admin = { fullName: "Seeniselvam", username: "Seeniselvam", role: "ADMIN" };

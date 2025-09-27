@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../styles/CourseForm.css";
+import "../../styles/CourseForm.css";
 
 export default function CourseForm({ courseData, onSave, onCancel }) {
     const [course, setCourse] = useState({ title: "", description: "" });

@@ -35,6 +35,7 @@ export default function AuthPage() {
                 const role = user.role.toUpperCase();
                 if (role === "STUDENT") navigate("/student");
                 else navigate("/home"); 
+                localStorage.setItem("user", JSON.stringify(user));
             } else {
                 form.role = "STUDENT";
                 await register(form);
