@@ -4,24 +4,35 @@ import com.examly.springapp.model.Submission;
 import com.examly.springapp.service.SubmissionService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/submissions")
 @CrossOrigin(origins = "*")
 public class SubmissionController {
 
-    private final SubmissionService service;
+    private final SubmissionService submissionService;
 
-    public SubmissionController(SubmissionService service) {
-        this.service = service;
+    public SubmissionController(SubmissionService submissionService) {
+        this.submissionService = submissionService;
     }
 
-    @PostMapping
-    public Submission submit(@RequestBody Submission submission) {
-        return service.submit(submission);
+    @PostMapping("/submit")
+    public Submission submitQuiz(
+            @RequestParam Long studentId,
+            @RequestParam Long courseId,
+            @RequestParam int score
+    ) {
+        return submissionService.submitQuiz(studentId, courseId, score);
     }
 
-    @GetMapping("/{id}")
-    public Submission getSubmission(@PathVariable Long id) {
-        return service.getSubmission(id);
+    @GetMapping("/student/{studentId}")
+    public List<Submission> getStudentSubmissions(@PathVariable Long studentId) {
+        return submissionService.getSubmissionsByStudent(studentId);
+    }
+
+    @GetMapping("/course/{courseId}")
+    public List<Submission> getCourseSubmissions(@PathVariable Long courseId) {
+        return submissionService.getSubmissionsByCourse(courseId);
     }
 }

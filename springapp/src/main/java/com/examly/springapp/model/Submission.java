@@ -1,65 +1,34 @@
 package com.examly.springapp.model;
 
-import javax.persistence.*;
-import java.util.Map;
+import jakarta.persistence.*;
 
 @Entity
 public class Submission {
 
-    public Submission(){}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long assessmentId;
     private Long studentId;
+    private Long courseId;
+    private int score;
 
-    @ElementCollection
-    @CollectionTable(name = "submission_answers")
-    @MapKeyColumn(name = "question")
-    @Column(name = "answer")
-    private Map<String, String> answers;
+    // optional timestamp
+    private String submittedAt;
 
-    private Integer score;
+    // getters & setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
+    public Long getStudentId() { return studentId; }
+    public void setStudentId(Long studentId) { this.studentId = studentId; }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getCourseId() { return courseId; }
+    public void setCourseId(Long courseId) { this.courseId = courseId; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public int getScore() { return score; }
+    public void setScore(int score) { this.score = score; }
 
-    public Long getAssessmentId() {
-        return assessmentId;
-    }
-
-    public void setAssessmentId(Long assessmentId) {
-        this.assessmentId = assessmentId;
-    }
-
-    public Long getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
-    }
-
-    public Map<String, String> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(Map<String, String> answers) {
-        this.answers = answers;
-    }
-
-    public Integer getScore() {
-        return score;
-    }
-
-    public void setScore(Integer score) {
-        this.score = score;
-    }
+    public String getSubmittedAt() { return submittedAt; }
+    public void setSubmittedAt(String submittedAt) { this.submittedAt = submittedAt; }
 }

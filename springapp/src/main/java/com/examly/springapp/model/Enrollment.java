@@ -21,6 +21,9 @@ public class Enrollment {
     @Column(nullable = false)
     private String status; // "ENROLLED", "COMPLETED"
 
+    @Column
+    private Integer score;
+
     public Enrollment() {}
 
     public Enrollment(Long studentId, Long courseId, String status) {
@@ -41,4 +44,7 @@ public class Enrollment {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public Integer getScore() { return score; }
+    public void setScore(Integer score) { this.score = score; }
 }
