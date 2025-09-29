@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation,useNavigate } from "react-router-dom";
 import Profile from "./Profile";
 import StudentCourses from "./StudentCourses";
 import AllCourses from "./AllCourses";
@@ -7,64 +7,64 @@ import * as api from "../../api";
 import "../../styles/StudentDashboard.css";
 
 export default function StudentDashboard() {
-    const [activeTab, setActiveTab] = useState("profile");
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [activeTab, setActiveTab] = useState(location.state?.activeTab || "profile");
     const [user, setUser] = useState(null);
-    const [allCourses, setAllCourses] = useState([]);
-    const [enrolledCourses, setEnrolledCourses] = useState([]);
 
     const loggedUser = JSON.parse(localStorage.getItem("user"));
     const userId = loggedUser?.id;
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (!userId) return;
-
-                // Get profile
-                const profileData = await api.getProfile(userId);
-                setUser(profileData);
-
-                // Get enrollments
-                const enrollments = await api.getStudentEnrollments(userId);
-                const enrolledCourseIds = enrollments.map(e => e.courseId);
-
-                // Get all courses
-                const coursesData = await api.getAllCourses();
-                setAllCourses(coursesData);
-
-                // Filter enrolled course objects
-                setEnrolledCourses(coursesData.filter(c => enrolledCourseIds.includes(c.id)));
-
-            } catch (err) {
-                console.error(err);
-            }
+        const fetchProfile = async () => {
+            if (!userId) return;
+            const profileData = await api.getProfile(userId);
+            setUser(profileData);
         };
-
-        fetchData();
+        fetchProfile();
     }, [userId]);
+
+    const handleLogout = () => {
+        localStorage.removeItem("user"); // clear user session
+        navigate("/"); // go back to home page
+    };
 
     return (
         <div className="dashboard-container">
             <header>
                 <h2>Welcome, {user?.fullName || loggedUser?.username}</h2>
                 <div className="tabs">
-                    <button className={activeTab === "profile" ? "active" : ""} onClick={() => setActiveTab("profile")}>
+                    <button
+                        className={activeTab === "profile" ? "active" : ""}
+                        onClick={() => setActiveTab("profile")}
+                    >
                         Profile
                     </button>
-                    <button className={activeTab === "enrolled" ? "active" : ""} onClick={() => setActiveTab("enrolled")}>
+                    <button
+                        className={activeTab === "enrolled" ? "active" : ""}
+                        onClick={() => setActiveTab("enrolled")}
+                    >
                         My Courses
                     </button>
-                    <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>
+                    <button
+                        className={activeTab === "all" ? "active" : ""}
+                        onClick={() => setActiveTab("all")}
+                    >
                         All Courses
+                    </button>
+                    <button className="logout-btn" onClick={handleLogout}>
+                        Logout
                     </button>
                 </div>
             </header>
 
             <div className="tab-content">
                 {activeTab === "profile" && <Profile user={user} />}
-                {activeTab === "enrolled" && <StudentCourses courses={enrolledCourses} />}
-                {activeTab === "all" && <AllCourses userId={userId} setMyCourses={setEnrolledCourses} />}
+                {activeTab === "enrolled" && <StudentCourses />}
+                {activeTab === "all" && <AllCourses />}
             </div>
         </div>
     );
 }
+
+

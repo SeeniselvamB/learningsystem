@@ -2,6 +2,7 @@ package com.examly.springapp.controller;
 
 import com.examly.springapp.model.Submission;
 import com.examly.springapp.service.SubmissionService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,21 +19,33 @@ public class SubmissionController {
     }
 
     @PostMapping("/submit")
-    public Submission submitQuiz(
+    public ResponseEntity<Submission> submitQuiz(
             @RequestParam Long studentId,
             @RequestParam Long courseId,
             @RequestParam int score
     ) {
-        return submissionService.submitQuiz(studentId, courseId, score);
+        Submission submission = submissionService.submitQuiz(studentId, courseId, score);
+        return ResponseEntity.ok(submission);
     }
 
     @GetMapping("/student/{studentId}")
-    public List<Submission> getStudentSubmissions(@PathVariable Long studentId) {
-        return submissionService.getSubmissionsByStudent(studentId);
+    public ResponseEntity<List<Submission>> getByStudent(@PathVariable Long studentId) {
+        List<Submission> submissions = submissionService.getSubmissionsByStudent(studentId);
+        return ResponseEntity.ok(submissions);
     }
 
     @GetMapping("/course/{courseId}")
-    public List<Submission> getCourseSubmissions(@PathVariable Long courseId) {
-        return submissionService.getSubmissionsByCourse(courseId);
+    public ResponseEntity<List<Submission>> getByCourse(@PathVariable Long courseId) {
+        List<Submission> submissions = submissionService.getSubmissionsByCourse(courseId);
+        return ResponseEntity.ok(submissions);
+    }
+
+    @GetMapping("/student/{studentId}/course/{courseId}")
+    public ResponseEntity<Submission> getSubmission(
+            @PathVariable Long studentId,
+            @PathVariable Long courseId
+    ) {
+        Submission submission = submissionService.getSubmission(studentId, courseId);
+        return ResponseEntity.ok(submission);
     }
 }

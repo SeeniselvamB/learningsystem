@@ -7,7 +7,6 @@ export default function StudentCourses() {
     const [myCourses, setMyCourses] = useState([]);
     const navigate = useNavigate();
 
-    // Fetch all courses the student is enrolled in
     const fetchMyCourses = async () => {
         try {
             const user = JSON.parse(localStorage.getItem("user"));
@@ -16,7 +15,6 @@ export default function StudentCourses() {
             const enrolledData = await api.getStudentEnrollments(user.id);
             const allCourses = await api.getAllCourses();
 
-            // Merge enrollment + course info
             const merged = enrolledData.map((en) => {
                 const course = allCourses.find((c) => c.id === en.courseId);
                 return { ...course, ...en };
@@ -36,7 +34,7 @@ export default function StudentCourses() {
         return <p>You are not enrolled in any courses yet.</p>;
     }
 
-    const handleRetake = (courseId) => {
+    const handleStartOrRetake = (courseId) => {
         navigate(`/student/quiz/${courseId}`);
     };
 
@@ -52,7 +50,7 @@ export default function StudentCourses() {
                         {course.status === "ENROLLED" && (
                             <button
                                 className="start-quiz-btn"
-                                onClick={() => navigate(`/student/quiz/${course.id}`)}
+                                onClick={() => handleStartOrRetake(course.id)}
                             >
                                 Start Quiz
                             </button>
@@ -65,7 +63,7 @@ export default function StudentCourses() {
                                 </button>
                                 <button
                                     className="retake-btn"
-                                    onClick={() => handleRetake(course.id)}
+                                    onClick={() => handleStartOrRetake(course.id)}
                                 >
                                     Retake Quiz
                                 </button>

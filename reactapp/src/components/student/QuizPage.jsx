@@ -10,7 +10,6 @@ export default function QuizPage() {
     const [quizzes, setQuizzes] = useState([]);
     const [answers, setAnswers] = useState({});
 
-    // Fetch quizzes for the course
     const fetchQuizzes = async () => {
         try {
             const data = await api.getQuizzesByCourse(id);
@@ -46,8 +45,8 @@ export default function QuizPage() {
 
             alert(`Quiz submitted! Your score: ${score}/${quizzes.length}`);
 
-            // Navigate back to Student Courses page
-            navigate("/student/courses", { replace: true }); // triggers refetch
+            // Navigate back to StudentDashboard "My Courses" tab
+            navigate("/student", { state: { activeTab: "enrolled" } });
         } catch (err) {
             console.error("Error submitting quiz:", err);
         }

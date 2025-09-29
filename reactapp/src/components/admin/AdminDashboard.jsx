@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import {useNavigate } from "react-router-dom";
 import Course from "./Course";
 import Profile from "./Profile";
 import User from "./User";
@@ -11,6 +12,13 @@ export default function AdminDashboard() {
     const [activeTab, setActiveTab] = useState("profile");
     const [users, setUsers] = useState([]); 
     const [courses, setCourses] = useState([]);
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("user"); // clear user session
+        navigate("/"); // go back to home page
+    };
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -46,6 +54,9 @@ export default function AdminDashboard() {
                         onClick={() => setActiveTab("courses")}
                     >
                         Courses
+                    </button>
+                    <button className="logout-btn" onClick={handleLogout}>
+                        Logout
                     </button>
                 </div>
             </header>

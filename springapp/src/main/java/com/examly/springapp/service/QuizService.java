@@ -38,8 +38,7 @@ public class QuizService {
     }
 
     public List<Quiz> getAllQuizzesByCourse(Long courseId) {
-        CourseModule course = courseRepo.findById(courseId).orElseThrow();
-        return quizRepo.findByCourse(course);
+        return quizRepo.findByCourseId(courseId); // <-- fixed
     }
 
     public Quiz getQuizById(Long id) {

@@ -5,7 +5,6 @@ import com.examly.springapp.repository.SubmissionRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -18,19 +17,12 @@ public class SubmissionService {
     }
 
     public Submission submitQuiz(Long studentId, Long courseId, int score) {
-        Submission existing = submissionRepository.findByStudentIdAndCourseId(studentId, courseId);
-        if (existing != null) {
-            // update old submission
-            existing.setScore(score);
-            existing.setSubmittedAt(LocalDateTime.now().toString());
-            return submissionRepository.save(existing);
-        }
-
         Submission submission = new Submission();
         submission.setStudentId(studentId);
         submission.setCourseId(courseId);
         submission.setScore(score);
-        submission.setSubmittedAt(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        submission.setSubmittedAt(LocalDateTime.now()); // ✅ Use LocalDateTime
+
         return submissionRepository.save(submission);
     }
 
@@ -40,5 +32,10 @@ public class SubmissionService {
 
     public List<Submission> getSubmissionsByCourse(Long courseId) {
         return submissionRepository.findByCourseId(courseId);
+    }
+
+    public Submission getSubmission(Long studentId, Long courseId) {
+        return submissionRepository.findByStudentIdAndCourseId(studentId, courseId)
+                .orElse(null);
     }
 }
