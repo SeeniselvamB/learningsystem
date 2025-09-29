@@ -1,20 +1,19 @@
-// src/components/student/QuizPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getQuizzesByCourse, updateProgress } from "../../api";
+import * as api from "../../api";
 import "../../styles/QuizPage.css";
 
 export default function QuizPage() {
-    const { courseId } = useParams();
+    const { id } = useParams(); // courseId
     const navigate = useNavigate();
 
     const [quizzes, setQuizzes] = useState([]);
     const [answers, setAnswers] = useState({});
 
-    // Fetch quizzes for this course
+    // Fetch quizzes for the course
     const fetchQuizzes = async () => {
         try {
-            const data = await getQuizzesByCourse(courseId);
+            const data = await api.getQuizzesByCourse(id);
             setQuizzes(data);
         } catch (err) {
             console.error("Error fetching quizzes:", err);
@@ -23,14 +22,12 @@ export default function QuizPage() {
 
     useEffect(() => {
         fetchQuizzes();
-    }, [courseId]);
+    }, [id]);
 
-    // Handle selecting an answer
     const handleAnswerChange = (quizIndex, optionIndex) => {
         setAnswers({ ...answers, [quizIndex]: optionIndex });
     };
 
-    // Handle quiz submission
     const handleSubmitQuiz = async () => {
         try {
             let score = 0;
@@ -38,15 +35,19 @@ export default function QuizPage() {
                 if (answers[index] === quiz.correctIndex) score++;
             });
 
-            const user = JSON.parse(localStorage.getItem("user")); // 👈 logged-in user
+            const user = JSON.parse(localStorage.getItem("user"));
             if (!user) {
                 alert("You must be logged in to submit the quiz.");
                 return;
             }
 
-            await updateProgress(courseId, user.username, score);
+            // Complete the course with score
+            await api.completeCourse(id, user.id, score);
+
             alert(`Quiz submitted! Your score: ${score}/${quizzes.length}`);
-            navigate("/student"); // back to dashboard
+
+            // Navigate back to Student Courses page
+            navigate("/student/courses", { replace: true }); // triggers refetch
         } catch (err) {
             console.error("Error submitting quiz:", err);
         }

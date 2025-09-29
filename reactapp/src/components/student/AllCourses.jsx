@@ -5,63 +5,83 @@ import "../../styles/Course.css";
 
 export default function AllCourses({ username, setMyCourses }) {
     const [courses, setCourses] = useState([]);
-    const [enrolledCourseIds, setEnrolledCourseIds] = useState([]);
+    const [enrollments, setEnrollments] = useState([]);
     const navigate = useNavigate();
 
-    const fetchCourses = async () => {
+    const fetchData = async () => {
         try {
-            const data = await api.getAllCourses();
-            setCourses(data);
+            const allCourses = await api.getAllCourses();
+            setCourses(allCourses);
 
-            // Fetch enrolled courses for the user
-            const enrolledData = await api.getStudentEnrollments(username);
-            const ids = enrolledData.map(e => e.courseId);
-            setEnrolledCourseIds(ids);
-
+            const loggedUser = JSON.parse(localStorage.getItem("user"));
+            if (loggedUser?.id) {
+                const enrolledData = await api.getStudentEnrollments(loggedUser.id);
+                setEnrollments(enrolledData);
+            }
         } catch (err) {
             console.error("Error fetching courses:", err);
         }
     };
 
-    useEffect(() => { fetchCourses(); }, []);
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const handleEnroll = async (course) => {
         try {
-            // await api.enrollCourse(username, course.id);
             const loggedUser = JSON.parse(localStorage.getItem("user"));
-            const userId = loggedUser?.id;
-            await api.enrollCourse(course.id, userId);
+            if (!loggedUser) return;
+
+            await api.enrollCourse(course.id, loggedUser.id);
+
             alert("Enrolled successfully!");
-            setEnrolledCourseIds(prev => [...prev, course.id]);
-            if (setMyCourses) setMyCourses(prev => [...prev, course]);
+            // Refresh data from backend so it persists across reloads
+            fetchData();
         } catch (err) {
             console.error("Enrollment error:", err);
         }
     };
 
+    const getEnrollment = (courseId) =>
+        enrollments.find((e) => e.courseId === courseId);
+
     return (
         <div className="courses-section">
             <h3>All Available Courses</h3>
             <div className="courses-grid">
-                {courses.map(course => {
-                    const isEnrolled = enrolledCourseIds.includes(course.id);
+                {courses.map((course) => {
+                    const enrollment = getEnrollment(course.id);
+                    const status = enrollment?.status;
+                    const score = enrollment?.score;
+
                     return (
                         <div key={course.id} className="course-card">
                             <h4>{course.title}</h4>
                             <p>{course.description}</p>
-                            {!isEnrolled ? (
+
+                            {!status && (
                                 <button
                                     className="enroll-btn"
                                     onClick={() => handleEnroll(course)}
                                 >
                                     Enroll
                                 </button>
-                            ) : (
+                            )}
+
+                            {status === "ENROLLED" && (
                                 <button
-                                    className="start-quiz-btn"
-                                    onClick={() => navigate(`/student/quiz/${course.id}`)}
+                                    className="start-quiz-btn" disabled
+                                    onClick={() =>
+                                        navigate(`/student/quiz/${course.id}`)
+                                    }
                                 >
                                     Start Quiz
+                                </button>
+                            )}
+
+                            {status === "COMPLETED" && (
+                                <button className="completed-btn" disabled>
+                                    Completed (Score: {score})
                                 </button>
                             )}
                         </div>
@@ -71,3 +91,4 @@ export default function AllCourses({ username, setMyCourses }) {
         </div>
     );
 }
+

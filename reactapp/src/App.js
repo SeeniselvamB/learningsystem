@@ -6,28 +6,31 @@ import AuthPage from "./components/AuthPage";
 import StudentDashboard from "./components/student/StudentDashboard";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import CoursePage from "./components/admin/Course";
-import QuizPage from "./components/admin/QuizPage";
+import AdminQuizPage from "./components/admin/QuizPage"; 
+import StudentQuizPage from "./components/student/QuizPage";  // ✅ import student quiz page
+import StudentCourses from "./components/student/StudentCourses";
+
 function App() {
     return (
         <Router>
             <Navbar />
             <Routes>
+                {/* Public */}
                 <Route path="/" element={<Home />} />
                 <Route path="/auth" element={<AuthPage />} />
+
+                {/* Student */}
                 <Route path="/student" element={<StudentDashboard />} />
+                <Route path="/student/quiz/:id" element={<StudentQuizPage />} /> {/* ✅ added */}
+                <Route path="/student/courses" element={<StudentDashboard />} />
+
+                {/* Admin */}
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/courses" element={<CoursePage />} />
-                <Route path="/admin/quiz/:courseId" element={<QuizPage />} />
+                <Route path="/admin/quiz/:courseId" element={<AdminQuizPage />} />
             </Routes>
-            
         </Router>
-
     );
-    
 }
 
 export default App;
-
-
-
-
