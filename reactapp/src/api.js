@@ -26,7 +26,6 @@ export const updateQuiz = (quizId, quiz) => api.put(`/quiz/${quizId}`, quiz).the
 export const deleteQuiz = (quizId) => api.delete(`/quiz/${quizId}`).then(res => res.data);
 export const getQuizzesByCourse = (courseId) => api.get(`/quiz/course/${courseId}`).then(res => res.data);
 
-
 // Progress (optional)
 export const updateProgress = (courseId, student, progress) =>
     api.put(`/courses/${courseId}/progress`, null, { params: { student, progress } }).then(res => res.data);

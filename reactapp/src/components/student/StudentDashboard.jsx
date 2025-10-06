@@ -25,8 +25,8 @@ export default function StudentDashboard() {
     }, [userId]);
 
     const handleLogout = () => {
-        localStorage.removeItem("user"); // clear user session
-        navigate("/"); // go back to home page
+        localStorage.removeItem("user"); 
+        navigate("/"); 
     };
 
     return (
