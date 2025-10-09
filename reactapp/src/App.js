@@ -7,8 +7,7 @@ import StudentDashboard from "./components/student/StudentDashboard";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import CoursePage from "./components/admin/Course";
 import AdminQuizPage from "./components/admin/QuizPage"; 
-import StudentQuizPage from "./components/student/QuizPage";  // ✅ import student quiz page
-import StudentCourses from "./components/student/StudentCourses";
+import StudentQuizPage from "./components/student/QuizPage";  
 
 function App() {
     return (
@@ -21,7 +20,7 @@ function App() {
 
                 {/* Student */}
                 <Route path="/student" element={<StudentDashboard />} />
-                <Route path="/student/quiz/:id" element={<StudentQuizPage />} /> {/* ✅ added */}
+                <Route path="/student/quiz/:id" element={<StudentQuizPage />} /> 
                 <Route path="/student/courses" element={<StudentDashboard />} />
 
                 {/* Admin */}

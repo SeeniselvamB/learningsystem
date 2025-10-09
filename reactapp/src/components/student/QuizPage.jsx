@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import * as api from "../../api";
-import "../../styles/QuizPage.css";
+import "../../styles/StudentQuizPage.css";
 
-export default function QuizPage() {
-    const { id } = useParams(); // courseId
-    const navigate = useNavigate();
-
+export default function QuizPage({ courseId, onClose }) {
     const [quizzes, setQuizzes] = useState([]);
     const [answers, setAnswers] = useState({});
 
     const fetchQuizzes = async () => {
         try {
-            const data = await api.getQuizzesByCourse(id);
+            const data = await api.getQuizzesByCourse(courseId);
             setQuizzes(data);
         } catch (err) {
             console.error("Error fetching quizzes:", err);
@@ -21,7 +17,7 @@ export default function QuizPage() {
 
     useEffect(() => {
         fetchQuizzes();
-    }, [id]);
+    }, [courseId]);
 
     const handleAnswerChange = (quizIndex, optionIndex) => {
         setAnswers({ ...answers, [quizIndex]: optionIndex });
@@ -35,18 +31,12 @@ export default function QuizPage() {
             });
 
             const user = JSON.parse(localStorage.getItem("user"));
-            if (!user) {
-                alert("You must be logged in to submit the quiz.");
-                return;
-            }
+            if (!user) return;
 
-            // Complete the course with score
-            await api.completeCourse(id, user.id, score);
+            await api.completeCourse(courseId, user.id, score);
 
             alert(`Quiz submitted! Your score: ${score}/${quizzes.length}`);
-
-            // Navigate back to StudentDashboard "My Courses" tab
-            navigate("/student", { state: { activeTab: "enrolled" } });
+            if (onClose) onClose();
         } catch (err) {
             console.error("Error submitting quiz:", err);
         }
@@ -55,6 +45,7 @@ export default function QuizPage() {
     return (
         <div className="quizpage-container">
             <h2>Course Quiz</h2>
+            <button className="close-quiz-btn" onClick={onClose}>Close Quiz</button>
 
             {quizzes.length === 0 ? (
                 <p>No quizzes available for this course.</p>
@@ -77,9 +68,7 @@ export default function QuizPage() {
                                                 name={`quiz-${qIndex}`}
                                                 value={oIndex}
                                                 checked={answers[qIndex] === oIndex}
-                                                onChange={() =>
-                                                    handleAnswerChange(qIndex, oIndex)
-                                                }
+                                                onChange={() => handleAnswerChange(qIndex, oIndex)}
                                             />
                                             {option}
                                         </label>
@@ -89,9 +78,7 @@ export default function QuizPage() {
                         </div>
                     ))}
 
-                    <button type="submit" className="submit-btn">
-                        Submit Quiz
-                    </button>
+                    <button type="submit" className="submit-btn">Submit Quiz</button>
                 </form>
             )}
         </div>

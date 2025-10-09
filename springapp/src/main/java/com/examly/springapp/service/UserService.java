@@ -52,4 +52,8 @@ public class UserService {
         repo.deleteAll();
     }
 
+    public boolean existsByEmail(String email) {
+        return repo.existsByEmail(email);
+    }
+
 }

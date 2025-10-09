@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import * as api from "../../api";
-import "../../styles/Course.css";
+import "../../styles/StudentCourse.css";
 
-export default function StudentCourses() {
+export default function StudentCourses({ onStartQuiz }) {
     const [myCourses, setMyCourses] = useState([]);
-    const navigate = useNavigate();
 
     const fetchMyCourses = async () => {
         try {
@@ -35,7 +33,7 @@ export default function StudentCourses() {
     }
 
     const handleStartOrRetake = (courseId) => {
-        navigate(`/student/quiz/${courseId}`);
+        if (onStartQuiz) onStartQuiz(courseId); // call parent callback
     };
 
     return (

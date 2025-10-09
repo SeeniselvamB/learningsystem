@@ -1,50 +1,67 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import CourseForm from "./CourseForm";
 import * as api from "../../api";
-import "../../styles/Course.css";
+import "../../styles/AdminCourse.css";
 
-export default function Course() {
-    const [courses, setCourses] = useState([]);
+export default function Course({ courses, setCourses, onManageQuiz }) {
     const [showForm, setShowForm] = useState(false);
     const [editingCourse, setEditingCourse] = useState(null);
 
-    const navigate = useNavigate(); // router navigation
-
-    const fetchCourses = async () => {
-        try {
-            const data = await api.getAllCourses();
-            setCourses(data);
-        } catch (err) {
-            console.error(err);
+    useEffect(() => {
+        if (!courses || courses.length === 0) {
+            const fetchCourses = async () => {
+                try {
+                    const data = await api.getAllCourses();
+                    setCourses(data);
+                } catch (err) {
+                    console.error("Error fetching courses:", err);
+                    alert("Failed to fetch courses from backend");
+                }
+            };
+            fetchCourses();
         }
-    };
-
-    useEffect(() => { fetchCourses(); }, []);
+    }, [courses, setCourses]);
 
     const toggleForm = () => {
         setEditingCourse(null);
         setShowForm(!showForm);
     };
 
+    const handleManageQuizClick = (course) => {
+        if (onManageQuiz) onManageQuiz(course.id);
+    };
+
+    const handleDeleteCourse = async (course) => {
+        if (!window.confirm("Are you sure you want to delete this course?")) return;
+        try {
+            await api.deleteCourse(course.id);
+            setCourses(courses.filter(c => c.id !== course.id));
+            alert("Course deleted successfully!");
+        } catch (err) {
+            console.error("Failed to delete course:", err);
+            alert("Failed to delete course.");
+        }
+    };
+
     const handleAddCourse = async (course) => {
         try {
+            // ✅ Prevent duplicate course title
+            const duplicate = courses.find(
+                (c) => c.title.trim().toLowerCase() === course.title.trim().toLowerCase()
+            );
+            if (duplicate) {
+                alert(`Course "${course.title}" already exists!`);
+                return;
+            }
+
             const added = await api.addCourse(course);
             setCourses([...courses, added]);
             setShowForm(false);
-        } catch (err) { console.error(err); }
-    };
-
-    const handleDeleteCourse = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this course?")) return;
-        try {
-            await api.deleteCourse(id);
-            setCourses(courses.filter(c => c.id !== id));
-        } catch (err) { console.error(err); }
-    };
-
-    const handleManageQuiz = (course) => {
-        navigate(`/admin/quiz/${course.id}`);
+            alert("Course added successfully!");
+        } catch (err) {
+            console.error("Failed to add course:", err);
+            alert("Failed to add course.");
+        }
     };
 
     return (
@@ -58,8 +75,18 @@ export default function Course() {
                                 <h3 className="course-title">{course.title}</h3>
                                 <p className="course-desc">{course.description}</p>
                                 <div className="course-buttons">
-                                    <button onClick={() => handleManageQuiz(course)}>Manage Quiz</button>
-                                    <button className="delete-btn" onClick={() => handleDeleteCourse(course.id)}>Delete</button>
+                                    <button
+                                        className="manage-btn"
+                                        onClick={() => handleManageQuizClick(course)}
+                                    >
+                                        Manage Quiz
+                                    </button>
+                                    <button
+                                        className="delete-btn"
+                                        onClick={() => handleDeleteCourse(course)}
+                                    >
+                                        Delete
+                                    </button>
                                 </div>
                             </div>
                         ))}

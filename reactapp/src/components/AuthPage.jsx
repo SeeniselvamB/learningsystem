@@ -7,8 +7,8 @@ export default function AuthPage() {
     const location = useLocation();
     const navigate = useNavigate();
     const queryParams = new URLSearchParams(location.search);
-    const mode = queryParams.get("mode"); 
-    
+    const mode = queryParams.get("mode");
+
     const [isLogin, setIsLogin] = useState(mode !== "register");
     const [form, setForm] = useState({
         fullName: "",
@@ -22,8 +22,15 @@ export default function AuthPage() {
     const handleChange = (e) =>
         setForm({ ...form, [e.target.name]: e.target.value });
 
+    const isValidPassword = (password) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+        return regex.test(password);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
+
         try {
             if (isLogin && form.username === "Seeniselvam" && form.password === "Selvam@123") {
                 navigate("/admin");
@@ -32,18 +39,34 @@ export default function AuthPage() {
 
             if (isLogin) {
                 const user = await login(form.username, form.password);
-                const role = user.role.toUpperCase();
+                const role = user.role?.toUpperCase();
                 if (role === "STUDENT") navigate("/student");
-                else navigate("/home"); 
+                else navigate("/home");
                 localStorage.setItem("user", JSON.stringify(user));
             } else {
+                if (!isValidPassword(form.password)) {
+                    alert(
+                        "Password must include at least 1 uppercase, 1 lowercase, 1 number, and 1 special character."
+                    );
+                    return;
+                }
+
                 form.role = "STUDENT";
-                await register(form);
-                alert("Registration successful! Please login.");
-                setIsLogin(true);
+
+                try {
+                    await register(form);
+                    alert("Registration successful! Please login.");
+                    setIsLogin(true);
+                } catch (err) {
+                    if (err.response && err.response.status === 409) {
+                        alert("Email already exists");
+                    } else {
+                        alert("Server error. Please try again.");
+                    }
+                }
             }
         } catch (err) {
-            setError("Invalid credentials or server error");
+            alert("Invalid credentials or server error");
         }
     };
 
@@ -121,4 +144,3 @@ export default function AuthPage() {
         </div>
     );
 }
-

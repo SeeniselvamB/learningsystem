@@ -4,11 +4,11 @@ import "../styles/Navbar.css";
 
 export default function Navbar() {
     const navigate = useNavigate();
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // track login state
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleLogout = () => {
         setIsLoggedIn(false);
-        navigate("/"); // redirect to home page
+        navigate("/");
     };
 
     return (

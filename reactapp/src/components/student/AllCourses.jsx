@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import * as api from "../../api";
-import "../../styles/Course.css";
+import "../../styles/StudentCourse.css";
 
 export default function AllCourses({ username, setMyCourses }) {
     const [courses, setCourses] = useState([]);
@@ -91,4 +91,5 @@ export default function AllCourses({ username, setMyCourses }) {
         </div>
     );
 }
+
 

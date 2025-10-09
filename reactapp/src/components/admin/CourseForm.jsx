@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../../styles/CourseForm.css";
+import "../../styles/AdminCourseForm.css";
 
 export default function CourseForm({ courseData, onSave, onCancel }) {
     const [course, setCourse] = useState({ title: "", description: "" });
@@ -18,7 +18,9 @@ export default function CourseForm({ courseData, onSave, onCancel }) {
 
     return (
         <div className="course-form-container">
-            <h2 className="course-form-title">{courseData ? "Edit Course" : "Add New Course"}</h2>
+            <h2 className="course-form-title">
+                {courseData ? "Edit Course" : "Add New Course"}
+            </h2>
 
             <div className="course-form-field">
                 <label>Course Title</label>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getProfile } from "../../api";
-import "../../styles/Profile.css";
+import "../../styles/StudentProfile.css";
 
 export default function Profile() {
     const [profile, setProfile] = useState(null);
@@ -11,7 +11,7 @@ export default function Profile() {
 
         const fetchProfile = async () => {
             try {
-                const data = await getProfile(storedUser.id); 
+                const data = await getProfile(storedUser.id);
                 setProfile(data);
             } catch (err) {
                 console.error("Error fetching profile:", err);
@@ -24,11 +24,16 @@ export default function Profile() {
 
     return (
         <div className="profile-container">
-            <h2>Student Profile</h2>
-            <p><strong>ID:</strong> {profile.id}</p>
-            <p><strong>Username:</strong> {profile.username}</p>
-            <p><strong>Email:</strong> {profile.email}</p>
-            <p><strong>Role:</strong> {profile.role}</p>
+            <div className="profile-avatar">
+                {profile.username[0].toUpperCase()}
+            </div>
+            <div className="profile-info">
+                <h2>Student Profile</h2>
+                <p><strong>ID:</strong> {profile.id}</p>
+                <p><strong>Username:</strong> {profile.username}</p>
+                <p><strong>Email:</strong> {profile.email}</p>
+                <p><strong>Role:</strong> {profile.role}</p>
+            </div>
         </div>
     );
 }

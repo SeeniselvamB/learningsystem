@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useLocation,useNavigate } from "react-router-dom";
 import Profile from "./Profile";
 import StudentCourses from "./StudentCourses";
 import AllCourses from "./AllCourses";
+import QuizPage from "./QuizPage";
 import * as api from "../../api";
 import "../../styles/StudentDashboard.css";
 
 export default function StudentDashboard() {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState(location.state?.activeTab || "profile");
+    const [activeTab, setActiveTab] = useState("profile");
     const [user, setUser] = useState(null);
+    const [quizCourseId, setQuizCourseId] = useState(null); 
 
     const loggedUser = JSON.parse(localStorage.getItem("user"));
     const userId = loggedUser?.id;
@@ -25,8 +24,20 @@ export default function StudentDashboard() {
     }, [userId]);
 
     const handleLogout = () => {
-        localStorage.removeItem("user"); 
-        navigate("/"); 
+        localStorage.removeItem("user");
+        window.location.href = "/"; // or navigate("/")
+    };
+
+    // Callback to open quiz inside dashboard
+    const handleStartQuiz = (courseId) => {
+        setQuizCourseId(courseId);
+        setActiveTab("quiz");
+    };
+
+    // Close quiz and go back to My Courses
+    const handleCloseQuiz = () => {
+        setQuizCourseId(null);
+        setActiveTab("enrolled");
     };
 
     return (
@@ -60,11 +71,14 @@ export default function StudentDashboard() {
 
             <div className="tab-content">
                 {activeTab === "profile" && <Profile user={user} />}
-                {activeTab === "enrolled" && <StudentCourses />}
+                {activeTab === "enrolled" && (
+                    <StudentCourses onStartQuiz={handleStartQuiz} />
+                )}
                 {activeTab === "all" && <AllCourses />}
+                {activeTab === "quiz" && quizCourseId && (
+                    <QuizPage courseId={quizCourseId} onClose={handleCloseQuiz} />
+                )}
             </div>
         </div>
     );
 }
-
-

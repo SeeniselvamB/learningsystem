@@ -30,12 +30,15 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
-
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        User created = userService.register(user);
-        return ResponseEntity.ok(created);
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+        if (userService.existsByEmail(user.getEmail())) {
+            return ResponseEntity.status(409).body("Email already exists");
     }
+
+    User created = userService.register(user);
+    return ResponseEntity.ok(created);
+}
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
