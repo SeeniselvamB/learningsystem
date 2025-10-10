@@ -13,14 +13,14 @@
     background: #4a90e2;
     color: #fff;
     border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     margin-bottom: 3rem;
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .hero-section:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
 }
 
 .hero-section h1 {
@@ -49,7 +49,7 @@
     text-decoration: none;
     cursor: pointer;
     transition: transform 0.2s, background 0.2s;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .login-btn {
@@ -60,7 +60,7 @@
 .login-btn:hover {
     background: #e6f0ff;
     transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .register-btn {
@@ -71,7 +71,7 @@
 .register-btn:hover {
     background: #ff6333;
     transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .features-section {
@@ -96,7 +96,7 @@
     background: #fff;
     padding: 2rem;
     border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
     width: 250px;
     transition: transform 0.3s, box-shadow 0.3s;
     cursor: pointer;
@@ -104,7 +104,7 @@
 
 .feature-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
 }
 
 .feature-card h3 {
@@ -159,4 +159,38 @@
     .hero-section p {
         font-size: 0.95rem;
     }
+}
+.hero-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.top-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.bottom-buttons {
+    margin-top: 10px;
+}
+
+.guest-btn {
+    background: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+    font-weight: bold;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    transition: 0.3s;
+    
+}
+
+.guest-btn:hover {
+    background: #fff;
+    color: #4a90e2;
+    transform: scale(1.05);
 }

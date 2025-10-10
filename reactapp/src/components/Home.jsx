@@ -9,8 +9,13 @@ export default function Home() {
                 <h1>Welcome to the Learning Management System</h1>
                 <p>Manage courses, track progress, and connect with instructors seamlessly.</p>
                 <div className="hero-buttons">
+                    <div className="top-buttons">
                     <Link to="/auth?mode=login" className="btn login-btn">Login</Link>
                     <Link to="/auth?mode=register" className="btn register-btn">Register</Link>
+                    </div>
+                    <div className="bottom-buttons">
+                    <Link to="/guest" className="btn guest-btn">Continue as Guest</Link>
+                    </div>
                 </div>
             </div>
 
