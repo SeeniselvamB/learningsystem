@@ -1,43 +1,77 @@
 /* --- Container --- */
-.user-container {
+.manageuser-container {
     padding: 2rem;
     font-family: 'Arial', sans-serif;
 }
 
-.user-header {
-    text-align: center;
-    margin-bottom: 2rem;
+/* --- Header --- */
+.manageuser-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 8px;
+}
+
+.manageuser-header h2 {
     font-size: 1.8rem;
     color: #333;
+    font-weight: 600;
+}
+
+/* --- Add Button --- */
+.add-btn-container {
+    display: flex;
+    align-items: flex-end;
+}
+
+.add-btn {
+    background-color: #4a90e2;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.3s;
+    position: relative;
+    top: 3px;
+}
+
+.add-btn:hover {
+    background-color: #357abd;
 }
 
 /* --- Table --- */
-.user-table {
+.manageuser-table {
     width: 100%;
     border-collapse: collapse;
     box-shadow: 0 6px 20px rgba(0,0,0,0.1);
     border-radius: 12px;
     overflow: hidden;
+    margin-top: 1rem;
 }
 
-.user-table th, .user-table td {
+.manageuser-table th,
+.manageuser-table td {
     padding: 12px 16px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
-.user-table th {
+.manageuser-table th {
     background-color: #4a90e2;
     color: #fff;
     font-weight: 600;
 }
 
 /* --- Row Hover --- */
-.user-row {
+.manageuser-row {
     transition: background 0.3s;
 }
 
-.user-row:hover {
+.manageuser-row:hover {
     background-color: #e6f3ff;
 }
 
@@ -58,29 +92,54 @@
     background-color: #4caf50;
 }
 
-/* --- View Button --- */
-/* Courses cell flex */
-.courses-cell {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.role-badge.instructor {
+    background-color: #ffa500;
 }
 
-/* View button on right */
+/* --- Action Buttons --- */
+.edit-btn,
+.delete-btn,
 .view-btn-right {
-    padding: 4px 8px;
-    background-color: #17a2b8;
+    padding: 6px 10px;
     border: none;
-    border-radius: 4px;
-    color: white;
+    border-radius: 6px;
     cursor: pointer;
+    color: #fff;
     font-size: 0.85rem;
+    margin: 0 4px;
+    transition: background-color 0.2s;
+}
+
+.edit-btn {
+    background-color: #007bff;
+}
+
+.edit-btn:hover {
+    background-color: #0069d9;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.view-btn-right {
+    background-color: #17a2b8;
 }
 
 .view-btn-right:hover {
     background-color: #138496;
 }
 
+/* --- Courses Cell Flex --- */
+.courses-cell {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 /* --- Modal Overlay --- */
 .modal-overlay {
@@ -135,13 +194,57 @@
     color: #ff3b3b;
 }
 
-/* --- Modal Table --- */
+/* --- Form --- */
+.manageuser-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.manageuser-form label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.manageuser-form input,
+.manageuser-form select {
+    margin-bottom: 14px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.manageuser-form input:focus,
+.manageuser-form select:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 5px rgba(74,144,226,0.4);
+}
+
+.save-btn {
+    background-color: #4a90e2;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.save-btn:hover {
+    background-color: #357abd;
+}
+
+/* --- Modal Table (Courses) --- */
 .modal-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.modal-table th, .modal-table td {
+.modal-table th,
+.modal-table td {
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;

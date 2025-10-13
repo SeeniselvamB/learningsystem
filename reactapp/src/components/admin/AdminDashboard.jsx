@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Course from "./Course";
 import Profile from "./Profile";
-import User from "./User";
 import QuizPage from "./QuizPage";
-import { getAllUsers, getAllCourses } from "../../api";
+import ManageUsers from "./UserManagement"; // <-- use the merged UserManagement component
+import { getAllCourses } from "../../api";
 import { useNavigate } from "react-router-dom";
 import "../../styles/AdminDashboard.css";
 
@@ -11,7 +11,6 @@ export default function AdminDashboard() {
     const admin = { fullName: "Seeniselvam", username: "Seeniselvam", role: "ADMIN" };
 
     const [activeTab, setActiveTab] = useState("profile");
-    const [users, setUsers] = useState([]);
     const [courses, setCourses] = useState([]);
     const [selectedCourseId, setSelectedCourseId] = useState(null);
     const navigate = useNavigate();
@@ -22,13 +21,15 @@ export default function AdminDashboard() {
     };
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchCoursesData = async () => {
             try {
-                setUsers(await getAllUsers());
-                setCourses(await getAllCourses());
-            } catch (err) { console.error(err); }
+                const res = await getAllCourses();
+                setCourses(res);
+            } catch (err) {
+                console.error("Error fetching courses:", err);
+            }
         };
-        fetchData();
+        fetchCoursesData();
     }, []);
 
     return (
@@ -40,13 +41,13 @@ export default function AdminDashboard() {
                     <button className="logout-btn" onClick={handleLogout}>Logout</button>
                 </div>
                 <div className="tabs">
-                    {["profile", "users", "courses"].map(tab => (
+                    {["profile", "users", "courses"].map((tab) => (
                         <button
                             key={tab}
                             className={`tab-btn ${activeTab === tab ? "active" : ""}`}
                             onClick={() => {
                                 setActiveTab(tab);
-                                setSelectedCourseId(null); 
+                                setSelectedCourseId(null);
                             }}
                         >
                             {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -57,7 +58,7 @@ export default function AdminDashboard() {
 
             <div className="tab-content">
                 {activeTab === "profile" && <Profile admin={admin} />}
-                {activeTab === "users" && <User users={users} />}
+                {activeTab === "users" && <ManageUsers />} {/* merged users & courses view */}
                 {activeTab === "courses" && !selectedCourseId && (
                     <Course
                         courses={courses}
