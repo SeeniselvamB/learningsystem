@@ -32,18 +32,29 @@ export default function AuthPage() {
         setError(null);
 
         try {
+            // Admin hardcoded login
             if (isLogin && form.username === "Seeniselvam" && form.password === "Selvam@123") {
+                const adminUser = { username: "Seeniselvam", fullName: "Seeniselvam", role: "ADMIN" };
+                localStorage.setItem("user", JSON.stringify(adminUser));
                 navigate("/admin");
                 return;
             }
 
             if (isLogin) {
+                // Call backend login API
                 const user = await login(form.username, form.password);
                 const role = user.role?.toUpperCase();
-                if (role === "STUDENT") navigate("/student");
-                else navigate("/home");
+
+                // Save user in localStorage
                 localStorage.setItem("user", JSON.stringify(user));
+
+                // Navigate based on role
+                if (role === "STUDENT") navigate("/student");
+                else if (role === "INSTRUCTOR") navigate("/instructor");
+                else if (role === "ADMIN") navigate("/admin");
+                else alert("Unknown role. Contact admin.");
             } else {
+                // Registration
                 if (!isValidPassword(form.password)) {
                     alert(
                         "Password must include at least 1 uppercase, 1 lowercase, 1 number, and 1 special character."
@@ -51,6 +62,7 @@ export default function AuthPage() {
                     return;
                 }
 
+                // Default role = STUDENT
                 form.role = "STUDENT";
 
                 try {
@@ -67,6 +79,7 @@ export default function AuthPage() {
             }
         } catch (err) {
             alert("Invalid credentials or server error");
+            console.error(err);
         }
     };
 

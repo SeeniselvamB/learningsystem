@@ -1,57 +1,69 @@
 import React, { useState, useEffect } from "react";
-import Course from "./Course";
-import Profile from "./Profile";
-import QuizPage from "./QuizPage";
-import ManageUsers from "./UserManagement"; 
-import Instructor from "./Instructor"; 
-import { getAllCourses } from "../../api";
 import { useNavigate } from "react-router-dom";
-import "../../styles/AdminDashboard.css";
+import Profile from "./Profile";
+import Course from "./Course";
+import QuizPage from "./QuizPage";
+import UserManagement from "./UserManagement";
+import { getAllCourses } from "../../api";
+import "../../styles/InstructorDashboard.css";
 
-export default function AdminDashboard() {
-    const admin = { fullName: "Seeniselvam", username: "Seeniselvam", role: "ADMIN" };
+export default function InstructorDashboard({ instructor }) {
     const navigate = useNavigate();
+
+    // Fallback to localStorage if prop is not passed
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const currentInstructor = instructor || storedUser;
+
+    // Redirect if no user found
+    useEffect(() => {
+        if (!currentInstructor) {
+            navigate("/"); // go back to login
+        }
+    }, [currentInstructor, navigate]);
 
     const [activeTab, setActiveTab] = useState("profile");
     const [courses, setCourses] = useState([]);
     const [selectedCourseId, setSelectedCourseId] = useState(null);
 
-    
     const handleLogout = () => {
         localStorage.removeItem("user");
-        navigate("/"); 
+        navigate("/");
     };
 
-    
+    // Fetch instructor courses
     useEffect(() => {
         const fetchCoursesData = async () => {
+            if (!currentInstructor?.id) return;
             try {
                 const res = await getAllCourses();
-                setCourses(res);
+                const instructorCourses = res.filter(
+                    (course) => course.instructorId === currentInstructor.id
+                );
+                setCourses(instructorCourses);
             } catch (err) {
                 console.error("Error fetching courses:", err);
             }
         };
         fetchCoursesData();
-    }, []);
+    }, [currentInstructor?.id]);
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
-        setSelectedCourseId(null); // reset course selection when switching tabs
+        setSelectedCourseId(null);
     };
+
+    if (!currentInstructor) return null; // prevent rendering before user is loaded
 
     return (
         <div className="dashboard-container">
             <header className="dashboard-header">
-                <h2>Admin Dashboard</h2>
+                <h2>Instructor Dashboard</h2>
                 <div className="admin-info">
-                    <span>Welcome, <strong>{admin.fullName}</strong></span>
+                    <span>Welcome, <strong>{currentInstructor.fullName}</strong></span>
                     <button className="logout-btn" onClick={handleLogout}>Logout</button>
                 </div>
-
-                {/* Tabs */}
                 <div className="tabs">
-                    {["profile","instructors","users",  "courses"].map((tab) => (
+                    {["profile","users","courses" ].map((tab) => (
                         <button
                             key={tab}
                             className={`tab-btn ${activeTab === tab ? "active" : ""}`}
@@ -63,26 +75,26 @@ export default function AdminDashboard() {
                 </div>
             </header>
 
-            {/* Tab Content */}
             <div className="tab-content">
-                {activeTab === "profile" && <Profile admin={admin} />}
-
-                {activeTab === "users" && <ManageUsers filterRole="STUDENT" />}
-
-                {activeTab === "instructors" && <Instructor />}
-
+                {activeTab === "profile" && <Profile admin={currentInstructor} />}
+                
                 {activeTab === "courses" && !selectedCourseId && (
                     <Course
                         courses={courses}
                         setCourses={setCourses}
                         onManageQuiz={(courseId) => setSelectedCourseId(courseId)}
+                        isInstructor={true} // hide admin-only actions
                     />
                 )}
-
+                
                 {activeTab === "courses" && selectedCourseId && (
                     <QuizPage courseId={selectedCourseId} onBack={() => setSelectedCourseId(null)} />
                 )}
 
+                {activeTab === "users" && (
+                    <UserManagement />
+                )}
+                
             </div>
         </div>
     );
