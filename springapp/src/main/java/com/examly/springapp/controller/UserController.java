@@ -35,6 +35,9 @@ public class UserController {
         if (userService.existsByEmail(user.getEmail())) {
             return ResponseEntity.status(409).body("Email already exists");
     }
+    if (userService.existsByUsername(user.getUsername())) {
+            return ResponseEntity.status(409).body("username already exists");
+        }
 
     User created = userService.register(user);
     return ResponseEntity.ok(created);

@@ -41,14 +41,11 @@ export default function AuthPage() {
             }
 
             if (isLogin) {
-                // Call backend login API
+                // Login
                 const user = await login(form.username, form.password);
                 const role = user.role?.toUpperCase();
-
-                // Save user in localStorage
                 localStorage.setItem("user", JSON.stringify(user));
 
-                // Navigate based on role
                 if (role === "STUDENT") navigate("/student");
                 else if (role === "INSTRUCTOR") navigate("/instructor");
                 else if (role === "ADMIN") navigate("/admin");
@@ -62,7 +59,6 @@ export default function AuthPage() {
                     return;
                 }
 
-                // Default role = STUDENT
                 form.role = "STUDENT";
 
                 try {
@@ -71,7 +67,15 @@ export default function AuthPage() {
                     setIsLogin(true);
                 } catch (err) {
                     if (err.response && err.response.status === 409) {
-                        alert("Email already exists");
+                        // Handle duplicate email or username
+                        const message = err.response.data?.message || "";
+                        if (message.includes("email")) {
+                            alert("Email already exists");
+                        } else if (message.includes("username")) {
+                            alert("Username already exists");
+                        } else {
+                            alert("Email or username already exists");
+                        }
                     } else {
                         alert("Server error. Please try again.");
                     }
@@ -120,7 +124,7 @@ export default function AuthPage() {
                                 onChange={handleChange}
                                 required
                             />
-                            <select name="role" value="STUDENT">
+                            <select name="role" value="STUDENT" readOnly>
                                 <option value="STUDENT">Student</option>
                             </select>
                         </>

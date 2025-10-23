@@ -1,13 +1,36 @@
 import axios from "axios";
-
+import { getToken, setToken} from "./jwt";
 const api = axios.create({
     baseURL: "http://localhost:8080/api",
+    // baseURL: "https://8080-bebbbaadcbdafadabdcfaceddbbabeaeefcea.premiumproject.examly.io/api",
     headers: { "Content-Type": "application/json" },
 });
+// ✅ Automatically attach JWT to every request (if available)
+api.interceptors.request.use(
+    (config) => {
+        const token = getToken();
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
 
 // Users
 export const register = (user) => api.post("/users/register", user).then(res => res.data);
-export const login = (username, password) => api.post("/users/login", { username, password }).then(res => res.data);
+export const login = async (username, password) => {
+    const res = await api.post("/users/login", { username, password });
+    const user = res.data;
+
+    // Generate a simple frontend JWT (base64 payload only, not secure)
+    if (!user.token) {
+        user.token = btoa(JSON.stringify({ id: user.id, username: user.username, role: user.role }));
+    }
+
+    setToken(user.token); // Save token in localStorage
+    return user;
+};
 export const getProfile = (id) => api.get(`/users/${id}`).then(res => res.data);
 export const getAllUsers = () => api.get("/users").then(res => res.data);
 export const deleteUser = (id) => api.delete(`/users/${id}`).then(res => res.data);
@@ -44,3 +67,5 @@ export const completeCourse = (courseId, studentId, score) =>
     api.put(`/enrollments/complete`, null, {
         params: { studentId, courseId, score },
     }).then(res => res.data);
+
+
